@@ -13,31 +13,23 @@ describe('gulp-requirejs', function() {
         it('should concat the files in the correct order', function(done) {
             var stream = grjs({
                 out: 'simple_init.js',
-
                 baseUrl: 'test/fixtures/',
-                
                 findNestedDependencies: true,
                 skipPragmas: true,
-
                 name: 'simple_init',
-
                 include: ['simple_init'],
-
+                optimize: 'none',
                 create: true
             });
 
-            stream.on('data', function(output) {
-                should.exist(output);
-                should.exist(output.path);
-                should.exist(output.relative);
-                should.exist(output.contents);
-
-                output.relative.should.equal('simple_init.js');
-                String(output.contents).should.equal(fs.readFileSync('test/expected/simple_init.js', 'utf8'));
-                done();
+            stream.on('end', function () {
+                var output = fs.readFileSync('simple_init.js', 'utf8');
+                var expected = fs.readFileSync('test/expected/simple_init.js', 'utf8');
+                output.should.equal(expected);
             });
-        });
 
+            done();
+        });
     });
 
     describe('AMD und UMD mix', function() {
@@ -45,29 +37,22 @@ describe('gulp-requirejs', function() {
         it('should concat the files in the correct order', function(done) {
             var stream = grjs({
                 out: 'umd_init.js',
-
                 baseUrl: 'test/fixtures/',
-                
                 findNestedDependencies: true,
                 skipPragmas: true,
-
                 name: 'umd_init',
-
                 include: ['umd_init'],
-
+                optimize: 'none',
                 create: true
             });
 
-            stream.on('data', function(output) {
-                should.exist(output);
-                should.exist(output.path);
-                should.exist(output.relative);
-                should.exist(output.contents);
-
-                output.relative.should.equal('umd_init.js');
-                String(output.contents).should.equal(fs.readFileSync('test/expected/umd_init.js', 'utf8'));
-                done();
+            stream.on('end', function () {
+                var output = fs.readFileSync('umd_init.js', 'utf8');
+                var expected = fs.readFileSync('test/expected/umd_init.js', 'utf8');
+                output.should.equal(expected);
             });
+
+            done();
         });
 
     });
@@ -76,35 +61,27 @@ describe('gulp-requirejs', function() {
         it('should concat the files in the correct order, and build wrappers for the shimmed files', function(done) {
             var stream = grjs({
                 out: 'complex_init.js',
-
                 baseUrl: 'test/fixtures/vendor',
-                
                 findNestedDependencies: true,
                 skipPragmas: true,
-
                 name: '../complex_init',
-
                 include: ['../complex_init'],
-
-                create: true,
-
                 shim: {
                     'non_md_file': {
                         exports: 'myLib'
                     }
-                }
+                },
+                optimize: 'none',
+                create: true
             });
 
-            stream.on('data', function(output) {
-                should.exist(output);
-                should.exist(output.path);
-                should.exist(output.relative);
-                should.exist(output.contents);
-
-                output.relative.should.equal('complex_init.js');
-                String(output.contents).should.equal(fs.readFileSync('test/expected/complex_init.js', 'utf8'));
-                done();
+            stream.on('end', function () {
+                var output = fs.readFileSync('complex_init.js', 'utf8');
+                var expected = fs.readFileSync('test/expected/complex_init.js', 'utf8');
+                output.should.equal(expected);
             });
+
+            done();
         });
     });
 
